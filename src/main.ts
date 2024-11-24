@@ -1,5 +1,5 @@
 import colors from 'colors';
-import { setCommand } from '@src/set-command'
+import { setCommand } from './set-command'
 
 const [, , method] = process.argv
 console.log(process.argv)
