@@ -128,9 +128,7 @@ function searchAliasPropertyNode(node: Parser.SyntaxNode) {
     return navigateIntoNode(child, ['property_identifier']).text === 'alias'
   })
 }
-
-
-export function editCypressConfigFile({ aliasSetting, originalCode }: { originalCode: string, aliasSetting: { path: string, alias: string } }) {
+function navigateToAliasPropertyOfWebpack(originalCode: string) {
   const node = parser.parse(originalCode).rootNode
   const lexicalDeclarationNodes = getChildrenNodes(node, 'lexical_declaration')
   const webpackLexicalDeclarationNode = lexicalDeclarationNodes.find(isLexicalScopeName('webpackConfig'))
@@ -144,6 +142,13 @@ export function editCypressConfigFile({ aliasSetting, originalCode }: { original
   if (!aliasPropertyNode) return console.log(colors.bgRed.bold.black('alias property is not configured on webpack config return on cypress config file'))
 
   const aliasObjectNode = navigateIntoNode(aliasPropertyNode, ['object'])
+
+  return aliasObjectNode
+}
+
+export function editCypressConfigFile({ aliasSetting, originalCode }: { originalCode: string, aliasSetting: { path: string, alias: string } }) {
+  const aliasObjectNode = navigateToAliasPropertyOfWebpack(originalCode);
+  if (!aliasObjectNode) return
 
   return (
     originalCode.slice(0, aliasObjectNode.startIndex + 1) +
